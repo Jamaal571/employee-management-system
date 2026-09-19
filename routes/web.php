@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ForcePasswordController;
+use App\Http\Controllers\NoticeController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
     Route::get('/attendance/{employee}/history', [AttendanceController::class, 'history'])->name('attendance.history');
+    Route::get('/notices', [NoticeController::class, 'index'])->name('notices.index');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -51,6 +53,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
     Route::put('/departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
     Route::delete('/departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+    Route::get('/notices/create', [NoticeController::class, 'create'])->name('notices.create');
+    Route::post('/notices', [NoticeController::class, 'store'])->name('notices.store');
+    Route::delete('/notices/{notice}', [NoticeController::class, 'destroy'])->name('notices.destroy');
 
     Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
     Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
