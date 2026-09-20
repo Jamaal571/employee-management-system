@@ -7,7 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
-{    public function index()
+{
+    public function index()
     {
         $userId = auth()->id();
 
@@ -21,6 +22,7 @@ class MessageController extends Controller
             $unreadCount = Message::where('sender_id', $user->id)
                 ->where('receiver_id', $userId)
                 ->where('is_read', false)
+                ->where('is_deleted', false)
                 ->count();
 
             return [
@@ -66,7 +68,26 @@ class MessageController extends Controller
             'is_read' => false,
         ]);
 
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+
         return redirect()->route('messages.show', $user);
+    }
+
+    public function destroy(Message $message)
+    {
+        if ($message->sender_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $message->update(['is_deleted' => true]);
+
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return back();
     }
 
     public function poll(User $user)
@@ -92,6 +113,8 @@ class MessageController extends Controller
                     'body' => $m->body,
                     'time' => $m->created_at->format('h:i A'),
                     'is_mine' => $m->sender_id === auth()->id(),
+                    'is_read' => (bool) $m->is_read,
+                    'is_deleted' => (bool) $m->is_deleted,
                 ];
             })
         );

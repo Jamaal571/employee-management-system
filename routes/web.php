@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
     Route::get('/messages/{user}', [MessageController::class, 'show'])->name('messages.show');
     Route::post('/messages/{user}', [MessageController::class, 'store'])->name('messages.store');
+    Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
     Route::get('/messages/{user}/poll', [MessageController::class, 'poll'])->name('messages.poll');
 });
 
@@ -63,8 +64,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/notices', [NoticeController::class, 'store'])->name('notices.store');
     Route::delete('/notices/{notice}', [NoticeController::class, 'destroy'])->name('notices.destroy');
 
-    Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
-    Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
+
     Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
     Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
     Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');

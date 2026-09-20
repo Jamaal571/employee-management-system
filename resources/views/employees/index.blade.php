@@ -14,13 +14,11 @@
                 @endif
 
                 <div class="flex justify-between items-center mb-4">
-                    @if (auth()->user()->role === 'admin')
-                        <a href="{{ route('employees.create') }}" class="inline-block px-4 py-2 bg-blue-600 text-white rounded">
-                            + Add Employee
-                        </a>
-                    @else
-                        <div></div>
-                    @endif
+    @if (auth()->user()->role === 'admin')
+        <p class="text-sm text-gray-500 dark:text-gray-400">To add a new employee, go to <a href="{{ route('users.create') }}" class="text-brand-600 underline">Create User</a> and select role "Employee".</p>
+    @else
+        <div></div>
+    @endif
 
                     <form method="GET" action="{{ route('employees.index') }}">
                         <input type="text" name="search" placeholder="Search by name..." value="{{ request('search') }}" class="border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">

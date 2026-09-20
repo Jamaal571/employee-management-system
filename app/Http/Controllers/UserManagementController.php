@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Employee;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -17,16 +19,29 @@ class UserManagementController extends Controller
 
     public function create()
     {
-        return view('users.create');
+        $departments = Department::all();
+        return view('users.create', compact('departments'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'role' => 'required|in:admin,employee',
-        ]);
+        ];
+
+        if ($request->role === 'employee') {
+            $rules['phone'] = 'nullable|string|max:20';
+            $rules['position'] = 'required|string|max:255';
+            $rules['salary'] = 'required|numeric|min:0';
+            $rules['currency'] = 'required|in:USD,SLSH';
+            $rules['hire_date'] = 'required|date';
+            $rules['department_id'] = 'required|exists:departments,id';
+            $rules['photo'] = 'nullable|image|max:2048';
+        }
+
+        $request->validate($rules);
 
         $randomPassword = Str::random(10);
 
@@ -37,6 +52,25 @@ class UserManagementController extends Controller
             'role' => $request->role,
             'must_change_password' => true,
         ]);
+
+        if ($request->role === 'employee') {
+            $employeeData = [
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'position' => $request->position,
+                'salary' => $request->salary,
+                'currency' => $request->currency,
+                'hire_date' => $request->hire_date,
+                'department_id' => $request->department_id,
+            ];
+
+            if ($request->hasFile('photo')) {
+                $employeeData['photo'] = $request->file('photo')->store('employee_photos', 'public');
+            }
+
+            Employee::create($employeeData);
+        }
 
         return redirect()->route('users.index')
             ->with('success', "User created successfully.")

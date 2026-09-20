@@ -13,10 +13,33 @@
 
             <div class="flex-1 overflow-y-auto p-6 space-y-3" id="chat-scroll">
                 <template x-for="message in messages" :key="message.id">
-                    <div :class="message.is_mine ? 'flex justify-end' : 'flex justify-start'">
-                        <div :class="message.is_mine ? 'bg-brand-600 text-white rounded-br-sm' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-sm'" class="px-4 py-2 rounded-2xl max-w-xs">
-                            <p class="text-sm" x-text="message.body"></p>
-                            <p :class="message.is_mine ? 'text-brand-100' : 'text-gray-400'" class="text-xs mt-1" x-text="message.time"></p>
+                    <div>
+                        <div x-show="message.is_mine" class="flex justify-end group">
+                            <div class="flex items-end gap-1">
+                                <form :action="'/messages/' + message.id" method="POST" @submit.prevent="deleteMessage(message.id)" x-show="!message.is_deleted" class="opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button type="submit" class="text-gray-400 hover:text-red-500 text-xs">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    </button>
+                                </form>
+                                <div :class="message.is_deleted ? 'bg-gray-200 dark:bg-gray-600 italic text-gray-500 dark:text-gray-400' : 'bg-brand-600 text-white'" class="px-4 py-2 rounded-2xl rounded-br-sm max-w-xs">
+                                    <p class="text-sm" x-text="message.is_deleted ? 'This message was deleted' : message.body"></p>
+                                    <div class="flex items-center justify-end gap-1 mt-1">
+                                        <span :class="message.is_deleted ? 'text-gray-400' : 'text-brand-100'" class="text-xs" x-text="message.time"></span>
+                                        <template x-if="!message.is_deleted">
+                                            <div class="flex -space-x-1.5">
+                                                <svg class="w-3.5 h-3.5" :class="message.is_read ? 'text-sky-300' : 'text-brand-200'" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l4 4L18 6" /></svg>
+                                                <svg class="w-3.5 h-3.5" :class="message.is_read ? 'text-sky-300' : 'text-brand-200'" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l4 4L18 6" /></svg>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div x-show="!message.is_mine" class="flex justify-start">
+                            <div :class="message.is_deleted ? 'bg-gray-100 dark:bg-gray-700 italic text-gray-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100'" class="px-4 py-2 rounded-2xl rounded-bl-sm max-w-xs">
+                                <p class="text-sm" x-text="message.is_deleted ? 'This message was deleted' : message.body"></p>
+                                <p class="text-xs text-gray-400 mt-1" x-text="message.time"></p>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -58,7 +81,6 @@
 
                 sendMessage() {
                     if (!this.newBody.trim()) return;
-
                     const body = this.newBody;
                     this.newBody = '';
 
@@ -74,6 +96,18 @@
                         this.fetchMessages();
                         this.$nextTick(() => this.scrollToBottom());
                     });
+                },
+
+                deleteMessage(id) {
+                    if (!confirm('Delete this message?')) return;
+
+                    fetch('/messages/' + id, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                        },
+                    }).then(() => this.fetchMessages());
                 },
 
                 isNearBottom() {
