@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Message;
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class MessageController extends Controller
+{
+    public function index()
+    {
+        $userId = auth()->id();
+
+        $conversations = User::where('id', '!=', $userId)->get()->map(function ($user) use ($userId) {
+            $lastMessage = Message::where(function ($q) use ($userId, $user) {
+                $q->where('sender_id', $userId)->where('receiver_id', $user->id);
+            })->orWhere(function ($q) use ($userId, $user) {
+                $q->where('sender_id', $user->id)->where('receiver_id', $userId);
+            })->orderBy('created_at', 'desc')->first();
+
+            $unreadCount = Message::where('sender_id', $user->id)
+                ->where('receiver_id', $userId)
+                ->where('is_read', false)
+                ->count();
+
+            return [
+                'user' => $user,
+                'last_message' => $lastMessage,
+                'unread_count' => $unreadCount,
+            ];
+        });
+
+        return view('messages.index', compact('conversations'));
+    }
+
+    public function show(User $user)
+    {
+        $userId = auth()->id();
+
+        $messages = Message::where(function ($q) use ($userId, $user) {
+            $q->where('sender_id', $userId)->where('receiver_id', $user->id);
+        })->orWhere(function ($q) use ($userId, $user) {
+            $q->where('sender_id', $user->id)->where('receiver_id', $userId);
+        })->orderBy('created_at', 'asc')->get();
+
+        Message::where('sender_id', $user->id)
+            ->where('receiver_id', $userId)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return view('messages.show', compact('messages', 'user'));
+    }
+
+    public function store(Request $request, User $user)
+    {
+        $request->validate([
+            'body' => 'required|string|max:2000',
+        ]);
+
+        Message::create([
+            'sender_id' => auth()->id(),
+            'receiver_id' => $user->id,
+            'body' => $request->body,
+            'is_read' => false,
+        ]);
+
+        return redirect()->route('messages.show', $user);
+    }
+}
