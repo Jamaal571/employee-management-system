@@ -23,6 +23,9 @@
                     <form method="GET" action="{{ route('employees.index') }}">
                         <input type="text" name="search" placeholder="Search by name..." value="{{ request('search') }}" class="border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         <button type="submit" class="px-3 py-2 bg-gray-600 text-white rounded">Search</button>
+<a href="{{ route('employees.export') }}" class="inline-block px-3 py-2 bg-green-600 text-white rounded text-sm">
+    Export to Excel
+</a>
                     </form>
                 </div>
 

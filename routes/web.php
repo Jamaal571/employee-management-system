@@ -17,7 +17,22 @@ Route::get('/dashboard', function () {
     if (auth()->user()->role === 'admin') {
         $totalEmployees = \App\Models\Employee::count();
         $totalDepartments = \App\Models\Department::count();
-        return view('dashboard', compact('totalEmployees', 'totalDepartments'));
+
+        $departmentChart = \App\Models\Department::withCount('employees')->get()->map(function ($d) {
+            return ['name' => $d->name, 'count' => $d->employees_count];
+        });
+
+        $attendanceChart = collect(range(6, 0))->map(function ($daysAgo) {
+            $date = now()->subDays($daysAgo)->toDateString();
+            return [
+                'date' => now()->subDays($daysAgo)->format('M d'),
+                'present' => \App\Models\Attendance::where('date', $date)->where('status', 'present')->count(),
+                'late' => \App\Models\Attendance::where('date', $date)->where('status', 'late')->count(),
+                'absent' => \App\Models\Attendance::where('date', $date)->where('status', 'absent')->count(),
+            ];
+        });
+
+        return view('dashboard', compact('totalEmployees', 'totalDepartments', 'departmentChart', 'attendanceChart'));
     }
 
     $employee = \App\Models\Employee::where('email', auth()->user()->email)->first();
@@ -42,6 +57,7 @@ require __DIR__.'/auth.php';
 Route::middleware('auth')->group(function () {
     Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
     Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::get('/employees-export', [EmployeeController::class, 'export'])->name('employees.export');
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
     Route::get('/attendance/{employee}/history', [AttendanceController::class, 'history'])->name('attendance.history');

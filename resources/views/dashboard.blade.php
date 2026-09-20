@@ -37,11 +37,14 @@
                 </div>
             </div>
 
+       
+
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-xl card-hover">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("Welcome to the Employee Management System.") }}
                 </div>
             </div>
+
 
         @else
 
