@@ -7,8 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
-{
-    public function index()
+{    public function index()
     {
         $userId = auth()->id();
 
@@ -29,7 +28,9 @@ class MessageController extends Controller
                 'last_message' => $lastMessage,
                 'unread_count' => $unreadCount,
             ];
-        });
+        })->sortByDesc(function ($conv) {
+            return $conv['last_message'] ? $conv['last_message']->created_at : \Carbon\Carbon::createFromTimestamp(0);
+        })->values();
 
         return view('messages.index', compact('conversations'));
     }
@@ -66,5 +67,33 @@ class MessageController extends Controller
         ]);
 
         return redirect()->route('messages.show', $user);
+    }
+
+    public function poll(User $user)
+    {
+        $userId = auth()->id();
+
+        $messages = Message::where(function ($q) use ($userId, $user) {
+            $q->where('sender_id', $userId)->where('receiver_id', $user->id);
+        })->orWhere(function ($q) use ($userId, $user) {
+            $q->where('sender_id', $user->id)->where('receiver_id', $userId);
+        })->orderBy('created_at', 'asc')->get();
+
+        Message::where('sender_id', $user->id)
+            ->where('receiver_id', $userId)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return response()->json(
+            $messages->map(function ($m) {
+                return [
+                    'id' => $m->id,
+                    'sender_id' => $m->sender_id,
+                    'body' => $m->body,
+                    'time' => $m->created_at->format('h:i A'),
+                    'is_mine' => $m->sender_id === auth()->id(),
+                ];
+            })
+        );
     }
 }

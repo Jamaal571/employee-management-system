@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
     Route::get('/messages/{user}', [MessageController::class, 'show'])->name('messages.show');
     Route::post('/messages/{user}', [MessageController::class, 'store'])->name('messages.store');
+    Route::get('/messages/{user}/poll', [MessageController::class, 'poll'])->name('messages.poll');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
