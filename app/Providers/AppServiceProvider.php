@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Message;
+use App\Models\LeaveRequest;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
                     ->where('is_deleted', false)
                     ->count();
                 $view->with('unreadMessageCount', $unreadCount);
+
+                if (auth()->user()->role === 'admin') {
+                    $pendingLeaveCount = LeaveRequest::where('status', 'pending')->count();
+                    $view->with('pendingLeaveCount', $pendingLeaveCount);
+                }
             }
         });
     }

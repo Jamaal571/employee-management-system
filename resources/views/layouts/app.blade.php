@@ -22,11 +22,17 @@
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('dashboard') ? 'bg-white/10 text-white' : 'text-brand-100 hover:bg-white/5' }}">Dashboard</a>
                     <a href="{{ route('notices.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('notices.*') ? 'bg-white/10 text-white' : 'text-brand-100 hover:bg-white/5' }}">Notices</a>
                     <a href="{{ route('messages.index') }}" class="flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('messages.*') ? 'bg-white/10 text-white' : 'text-brand-100 hover:bg-white/5' }}">
-    <span>Messages</span>
-    @if (($unreadMessageCount ?? 0) > 0)
-        <span class="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{{ $unreadMessageCount }}</span>
-    @endif
-</a>
+                        <span>Messages</span>
+                        @if (($unreadMessageCount ?? 0) > 0)
+                            <span class="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{{ $unreadMessageCount }}</span>
+                        @endif
+                    </a>
+                    <a href="{{ route('leave-requests.index') }}" class="flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('leave-requests.*') ? 'bg-white/10 text-white' : 'text-brand-100 hover:bg-white/5' }}">
+                        <span>Leave Requests</span>
+                        @if (auth()->user()->role === 'admin' && ($pendingLeaveCount ?? 0) > 0)
+                            <span class="bg-yellow-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{{ $pendingLeaveCount }}</span>
+                        @endif
+                    </a>
                     @if (auth()->user()->role === 'admin')
                         <div class="pt-4 mt-4 border-t border-white/10">
                             <p class="px-3 text-xs font-semibold text-brand-300 uppercase tracking-wider mb-2">Management</p>
@@ -35,6 +41,7 @@
                         <a href="{{ route('employees.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('employees.*') ? 'bg-white/10 text-white' : 'text-brand-100 hover:bg-white/5' }}">Employees</a>
                         <a href="{{ route('attendance.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('attendance.*') ? 'bg-white/10 text-white' : 'text-brand-100 hover:bg-white/5' }}">Attendance</a>
                         <a href="{{ route('users.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('users.*') ? 'bg-white/10 text-white' : 'text-brand-100 hover:bg-white/5' }}">Users</a>
+                        <a href="{{ route('salary-payments.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('salary-payments.*') ? 'bg-white/10 text-white' : 'text-brand-100 hover:bg-white/5' }}">Salary Payments</a>
                     @endif
                 </nav>
             </aside>

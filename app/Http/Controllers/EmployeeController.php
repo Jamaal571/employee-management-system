@@ -11,7 +11,9 @@ class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Employee::with('department');
+               $query = Employee::with(['department', 'salaryPayments' => function ($q) {
+            $q->orderBy('paid_at', 'desc');
+        }]);
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }

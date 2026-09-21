@@ -14,18 +14,18 @@
                 @endif
 
                 <div class="flex justify-between items-center mb-4">
-    @if (auth()->user()->role === 'admin')
-        <p class="text-sm text-gray-500 dark:text-gray-400">To add a new employee, go to <a href="{{ route('users.create') }}" class="text-brand-600 underline">Create User</a> and select role "Employee".</p>
-    @else
-        <div></div>
-    @endif
+                    @if (auth()->user()->role === 'admin')
+                        <p class="text-sm text-gray-500 dark:text-gray-400">To add a new employee, go to <a href="{{ route('users.create') }}" class="text-brand-600 underline">Create User</a> and select role "Employee".</p>
+                    @else
+                        <div></div>
+                    @endif
 
-                    <form method="GET" action="{{ route('employees.index') }}">
+                    <form method="GET" action="{{ route('employees.index') }}" class="flex items-center gap-2">
                         <input type="text" name="search" placeholder="Search by name..." value="{{ request('search') }}" class="border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         <button type="submit" class="px-3 py-2 bg-gray-600 text-white rounded">Search</button>
-<a href="{{ route('employees.export') }}" class="inline-block px-3 py-2 bg-green-600 text-white rounded text-sm">
-    Export to Excel
-</a>
+                        <a href="{{ route('employees.export') }}" class="inline-block px-3 py-2 bg-green-600 text-white rounded text-sm">
+                            Export to Excel
+                        </a>
                     </form>
                 </div>
 
@@ -56,7 +56,7 @@
                                 <td class="py-2">{{ $employee->email }}</td>
                                 <td class="py-2">{{ $employee->position }}</td>
                                 <td class="py-2">{{ $employee->department->name ?? 'N/A' }}</td>
-                                <td cl<td class="py-2">{{ $employee->currency == 'SLSH' ? number_format($employee->salary, 2) . ' SLSH' : '$' . number_format($employee->salary, 2) }}</td>
+                                <td class="py-2">{{ $employee->currency == 'SLSH' ? number_format($employee->salary, 2) . ' SLSH' : '$' . number_format($employee->salary, 2) }}</td>
                                 <td class="py-2">{{ $employee->hire_date }}</td>
                                 <td class="py-2">
                                     @if (auth()->user()->role === 'admin')
@@ -66,6 +66,21 @@
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 ml-2">Delete</button>
                                         </form>
+                                                                               @php
+                                            $lastPayment = $employee->salaryPayments->first();
+                                            $daysSincePaid = $lastPayment ? $lastPayment->paid_at->diffInDays(now()) : null;
+                                            $canPay = !$lastPayment || $daysSincePaid >= 30;
+                                        @endphp
+                                        @if ($canPay)
+                                            <form action="{{ route('salary-payments.store', $employee) }}" method="POST" class="inline" onsubmit="return confirm('Mark salary as paid for {{ $employee->name }}?')">
+                                                @csrf
+                                                <button type="submit" class="text-green-600 ml-2">Mark as Paid</button>
+                                            </form>
+                                        @else
+                                            <span class="text-gray-400 ml-2 cursor-not-allowed" title="Already paid — next payment available in {{ 30 - $daysSincePaid }} day(s)">
+                                                Paid ({{ 30 - $daysSincePaid }}d left)
+                                            </span>
+                                        @endif
                                     @else
                                         <span class="text-gray-400 text-sm">View only</span>
                                     @endif

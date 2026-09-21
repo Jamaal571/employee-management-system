@@ -8,6 +8,8 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ForcePasswordController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\LeaveRequestController;
+use App\Http\Controllers\SalaryPaymentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -17,22 +19,7 @@ Route::get('/dashboard', function () {
     if (auth()->user()->role === 'admin') {
         $totalEmployees = \App\Models\Employee::count();
         $totalDepartments = \App\Models\Department::count();
-
-        $departmentChart = \App\Models\Department::withCount('employees')->get()->map(function ($d) {
-            return ['name' => $d->name, 'count' => $d->employees_count];
-        });
-
-        $attendanceChart = collect(range(6, 0))->map(function ($daysAgo) {
-            $date = now()->subDays($daysAgo)->toDateString();
-            return [
-                'date' => now()->subDays($daysAgo)->format('M d'),
-                'present' => \App\Models\Attendance::where('date', $date)->where('status', 'present')->count(),
-                'late' => \App\Models\Attendance::where('date', $date)->where('status', 'late')->count(),
-                'absent' => \App\Models\Attendance::where('date', $date)->where('status', 'absent')->count(),
-            ];
-        });
-
-        return view('dashboard', compact('totalEmployees', 'totalDepartments', 'departmentChart', 'attendanceChart'));
+        return view('dashboard', compact('totalEmployees', 'totalDepartments'));
     }
 
     $employee = \App\Models\Employee::where('email', auth()->user()->email)->first();
@@ -67,6 +54,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/messages/{user}', [MessageController::class, 'store'])->name('messages.store');
     Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
     Route::get('/messages/{user}/poll', [MessageController::class, 'poll'])->name('messages.poll');
+    Route::get('/leave-requests', [LeaveRequestController::class, 'index'])->name('leave-requests.index');
+    Route::get('/leave-requests/create', [LeaveRequestController::class, 'create'])->name('leave-requests.create');
+    Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave-requests.store');
+    Route::get('/salary-payments', [SalaryPaymentController::class, 'index'])->name('salary-payments.index');
+    Route::post('/salary-payments/{employee}', [SalaryPaymentController::class, 'store'])->name('salary-payments.store');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -80,7 +72,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/notices', [NoticeController::class, 'store'])->name('notices.store');
     Route::delete('/notices/{notice}', [NoticeController::class, 'destroy'])->name('notices.destroy');
 
-
     Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
     Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
     Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
@@ -90,4 +81,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
     Route::post('/users/{user}/reset-password', [UserManagementController::class, 'resetPassword'])->name('users.reset-password');
     Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
+
+    Route::post('/leave-requests/{leaveRequest}/approve', [LeaveRequestController::class, 'approve'])->name('leave-requests.approve');
+    Route::post('/leave-requests/{leaveRequest}/reject', [LeaveRequestController::class, 'reject'])->name('leave-requests.reject');
 });

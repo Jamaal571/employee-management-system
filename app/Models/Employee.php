@@ -9,9 +9,9 @@ class Employee extends Model
 {
     use HasFactory;
 
-   protected $fillable = [
-    'name', 'email', 'phone', 'position', 'salary', 'currency', 'hire_date', 'department_id', 'photo'
-];
+    protected $fillable = [
+        'name', 'email', 'phone', 'position', 'salary', 'currency', 'hire_date', 'department_id', 'photo'
+    ];
 
     public function department()
     {
@@ -21,5 +21,15 @@ class Employee extends Model
     public function attendances()
     {
         return $this->hasMany(Attendance::class);
+    }
+
+    public function leaveRequests()
+    {
+        return $this->hasMany(LeaveRequest::class);
+    }
+
+    public function salaryPayments()
+    {
+        return $this->hasMany(SalaryPayment::class);
     }
 }
