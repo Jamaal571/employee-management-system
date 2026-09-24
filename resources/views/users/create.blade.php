@@ -26,11 +26,12 @@
                 <input type="email" name="email" value="{{ old('email') }}" class="w-full border rounded p-2 mb-4 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
 
                 <label class="block mb-1 font-medium dark:text-gray-200">Role</label>
-                <select name="role" x-model="role" class="w-full border rounded p-2 mb-4 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
-                    <option value="">Select Role</option>
-                    <option value="admin">Admin</option>
-                    <option value="employee">Employee</option>
-                </select>
+              <select name="role" x-model="role" class="w-full border rounded p-2 mb-4 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+    <option value="">Select Role</option>
+    <option value="admin">Admin</option>
+    <option value="employee">Employee</option>
+    <option value="board">Board Member</option>
+</select>
 
                 <div x-show="role === 'employee'" x-cloak class="border-t dark:border-gray-700 pt-4 mt-2 space-y-4">
                     <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Employee Details</p>

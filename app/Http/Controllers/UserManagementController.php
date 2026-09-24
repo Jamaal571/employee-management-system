@@ -28,7 +28,7 @@ class UserManagementController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'role' => 'required|in:admin,employee',
+                        'role' => 'required|in:admin,employee,board',
         ];
 
         if ($request->role === 'employee') {

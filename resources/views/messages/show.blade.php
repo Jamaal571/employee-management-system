@@ -4,12 +4,21 @@
             <a href="{{ route('messages.index') }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
             </a>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-100 leading-tight">{{ $user->name }}</h2>
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-100 leading-tight flex items-center gap-2">
+    {{ $user->name }}
+    <span class="px-2 py-0.5 rounded text-xs
+        @if($user->role == 'admin') bg-purple-100 text-purple-700
+        @elseif($user->role == 'board') bg-blue-100 text-blue-700
+        @else bg-gray-100 text-gray-600
+        @endif">
+        {{ ucfirst($user->role) }}
+    </span>
+</h2>
         </div>
     </x-slot>
 
     <div class="py-8 px-4 lg:px-8 animate-fade-in" x-data="chatBox()" x-init="init()">
-        <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 shadow-sm rounded-xl overflow-hidden flex flex-col" style="height: 65vh;">
+     <div class="w-full bg-white dark:bg-gray-800 shadow-sm rounded-xl overflow-hidden flex flex-col" style="height: 65vh;">
 
             <div class="flex-1 overflow-y-auto p-6 space-y-3" id="chat-scroll">
                 <template x-for="message in messages" :key="message.id">

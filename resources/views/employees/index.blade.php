@@ -4,7 +4,7 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+     <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
 
                 @if (session('success'))
@@ -15,7 +15,14 @@
 
                 <div class="flex justify-between items-center mb-4">
                     @if (auth()->user()->role === 'admin')
-                        <p class="text-sm text-gray-500 dark:text-gray-400">To add a new employee, go to <a href="{{ route('users.create') }}" class="text-brand-600 underline">Create User</a> and select role "Employee".</p>
+                        <div class="flex gap-2">
+                            <a href="{{ route('employees.create') }}" class="inline-block px-4 py-2 bg-brand-600 text-white rounded text-sm">
+                                + Add Employee (no login)
+                            </a>
+                            <a href="{{ route('users.create') }}" class="inline-block px-4 py-2 bg-gray-600 text-white rounded text-sm">
+                                + Add Employee with Login
+                            </a>
+                        </div>
                     @else
                         <div></div>
                     @endif
@@ -66,7 +73,7 @@
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 ml-2">Delete</button>
                                         </form>
-                                                                               @php
+                                        @php
                                             $lastPayment = $employee->salaryPayments->first();
                                             $daysSincePaid = $lastPayment ? $lastPayment->paid_at->diffInDays(now()) : null;
                                             $canPay = !$lastPayment || $daysSincePaid >= 30;
@@ -77,7 +84,7 @@
                                                 <button type="submit" class="text-green-600 ml-2">Mark as Paid</button>
                                             </form>
                                         @else
-                                            <span class="text-gray-400 ml-2 cursor-not-allowed" title="Already paid — next payment available in {{ 30 - $daysSincePaid }} day(s)">
+                                            <span class="text-gray-400 ml-2" title="Next payment available in {{ 30 - $daysSincePaid }} day(s)">
                                                 Paid ({{ 30 - $daysSincePaid }}d left)
                                             </span>
                                         @endif
@@ -94,7 +101,6 @@
         </div>
     </div>
 
-    <!-- Photo Modal -->
     <div id="photoModal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50" onclick="closePhotoModal()">
         <img id="modalImage" src="" class="max-w-lg max-h-[80vh] rounded-lg shadow-2xl">
     </div>
@@ -105,7 +111,6 @@
             document.getElementById('photoModal').classList.remove('hidden');
             document.getElementById('photoModal').classList.add('flex');
         }
-
         function closePhotoModal() {
             document.getElementById('photoModal').classList.add('hidden');
             document.getElementById('photoModal').classList.remove('flex');

@@ -4,7 +4,7 @@
     </x-slot>
 
     <div class="py-8 px-4 lg:px-8 animate-fade-in">
-        <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-sm rounded-xl p-6">
+       <div class="w-full bg-white dark:bg-gray-800 shadow-sm rounded-xl p-6">
 
             @if (session('success'))
                 <div class="mb-4 p-4 bg-green-100 text-green-700 rounded">{{ session('success') }}</div>
