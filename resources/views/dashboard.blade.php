@@ -19,7 +19,7 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="text-3xl font-bold text-brand-600 dark:text-brand-400">{{ $totalEmployees }}</div>
+                  <div class="text-3xl font-bold text-brand-600 dark:text-brand-400" x-data="{ count: 0 }" x-init="let target = {{ $totalEmployees }}; let step = Math.max(1, Math.ceil(target/30)); let interval = setInterval(() => { count += step; if (count >= target) { count = target; clearInterval(interval); } }, 30)" x-text="count"></div>
                     <a href="{{ route('employees.index') }}" class="inline-block mt-3 px-4 py-2 bg-brand-600 text-white text-sm rounded-lg hover:bg-brand-700 btn-press">View All Employees</a>
                 </div>
 
@@ -32,7 +32,7 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="text-3xl font-bold text-green-600 dark:text-green-400">{{ $totalDepartments }}</div>
+                    <div class="text-3xl font-bold text-green-600 dark:text-green-400" x-data="{ count: 0 }" x-init="let target = {{ $totalDepartments }}; let step = Math.max(1, Math.ceil(target/30)); let interval = setInterval(() => { count += step; if (count >= target) { count = target; clearInterval(interval); } }, 30)" x-text="count"></div>
                     <a href="{{ route('departments.index') }}" class="inline-block mt-3 px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 btn-press">View All Departments</a>
                 </div>
             </div>

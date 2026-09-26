@@ -64,6 +64,7 @@
 <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 lg:px-8 py-4">{{ $header }}</div>
 @endisset
 <main class="flex-1 overflow-y-auto">{{ $slot }}</main>
+<x-toast />
 </div>
 </div>
 </body>

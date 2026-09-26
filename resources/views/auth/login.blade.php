@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -13,19 +14,18 @@
 <body class="font-sans antialiased">
 <div class="min-h-screen flex flex-col lg:flex-row">
 
-<div class="lg:w-1/2 bg-brand-800 flex items-center justify-center p-10 lg:p-16 relative overflow-hidden lg:rounded-r-[80px]">
-<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 20% 30%, white 1px, transparent 1px); background-size: 24px 24px;"></div>
+<div class="lg:w-1/2 flex items-center justify-center p-10 lg:p-16 relative overflow-hidden lg:rounded-r-[80px]" style="background-image: linear-gradient(rgba(46,31,20,0.75), rgba(46,31,20,0.75)), url('https://images.unsplash.com/photo-1758518731468-98e90ffd7430?fm=jpg&q=80&w=1600&auto=format&fit=crop'); background-size: cover; background-position: center;">
 <div class="relative z-10 max-w-md">
 <div class="w-14 h-14 bg-brand-50 rounded-full flex items-center justify-center mb-8">
 <svg class="w-7 h-7 text-brand-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
 </div>
-<h1 class="serif text-4xl lg:text-5xl text-brand-50 leading-tight mb-4">Manage Your<br>Employees</h1>
-<p class="text-brand-200 text-sm uppercase tracking-widest">Work Smarter</p>
+<h1 class="serif text-4xl lg:text-5xl text-brand-50 leading-tight mb-4 animate-slide-up" style="animation-delay: 0.1s; opacity: 0; animation-fill-mode: forwards;">Manage Your<br>Employees</h1>
+<p class="text-brand-200 text-sm uppercase tracking-widest animate-slide-up" style="animation-delay: 0.3s; opacity: 0; animation-fill-mode: forwards;">Work Smarter</p>
 </div>
 </div>
 
 <div class="lg:w-1/2 bg-cream flex items-center justify-center p-10 lg:p-16">
-<div class="w-full max-w-sm">
+<div class="w-full max-w-sm animate-slide-up" style="animation-delay: 0.4s; opacity: 0; animation-fill-mode: forwards;">
 
 @if (session('status'))
 <div class="mb-4 p-3 bg-green-100 text-green-700 rounded text-sm">{{ session('status') }}</div>

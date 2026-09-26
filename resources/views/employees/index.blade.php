@@ -50,8 +50,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($employees as $employee)
-                            <tr class="border-b dark:border-gray-700 dark:text-gray-300">
+                       @foreach ($employees as $employee)
+    <tr class="border-b dark:border-gray-700 dark:text-gray-300 row-stagger" style="animation-delay: {{ $loop->index * 0.04 }}s;">
                                 <td class="py-2">
                                     @if ($employee->photo)
                                         <img src="{{ asset('storage/' . $employee->photo) }}" class="w-10 h-10 object-cover rounded-full cursor-pointer hover:opacity-80" onclick="openPhotoModal('{{ asset('storage/' . $employee->photo) }}')">
