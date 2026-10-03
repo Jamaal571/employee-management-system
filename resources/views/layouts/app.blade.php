@@ -18,13 +18,28 @@
 <nav class="px-3 py-4 space-y-1">
 @if (auth()->user()->role === 'board')
 <a href="{{ route('board.index') }}" class="block px-3 py-2 rounded-lg text-sm text-brand-100">Company Overview</a>
-<a href="{{ route('messages.index') }}" class="block px-3 py-2 rounded-lg text-sm text-brand-100">Messages</a>
+<a href="{{ route('messages.index') }}" class="flex justify-between items-center px-3 py-2 rounded-lg text-sm text-brand-100">
+<span>Messages</span>
+@if (($unreadMessageCount ?? 0) > 0)
+<span class="bg-white text-brand-800 text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">{{ $unreadMessageCount }}</span>
+@endif
+</a>
 <a href="{{ route('reports.index') }}" class="block px-3 py-2 rounded-lg text-sm text-brand-100">Reports</a>
 @else
 <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-lg text-sm text-brand-100">Dashboard</a>
 <a href="{{ route('notices.index') }}" class="block px-3 py-2 rounded-lg text-sm text-brand-100">Notices</a>
-<a href="{{ route('messages.index') }}" class="block px-3 py-2 rounded-lg text-sm text-brand-100">Messages</a>
-<a href="{{ route('leave-requests.index') }}" class="block px-3 py-2 rounded-lg text-sm text-brand-100">Leave Requests</a>
+<a href="{{ route('messages.index') }}" class="flex justify-between items-center px-3 py-2 rounded-lg text-sm text-brand-100">
+<span>Messages</span>
+@if (($unreadMessageCount ?? 0) > 0)
+<span class="bg-white text-brand-800 text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">{{ $unreadMessageCount }}</span>
+@endif
+</a>
+<a href="{{ route('leave-requests.index') }}" class="flex justify-between items-center px-3 py-2 rounded-lg text-sm text-brand-100">
+<span>Leave Requests</span>
+@if (auth()->user()->role === 'admin' && ($pendingLeaveCount ?? 0) > 0)
+<span class="bg-white text-brand-800 text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">{{ $pendingLeaveCount }}</span>
+@endif
+</a>
 @if (auth()->user()->role === 'admin')
 <a href="{{ route('departments.index') }}" class="block px-3 py-2 rounded-lg text-sm text-brand-100">Departments</a>
 <a href="{{ route('employees.index') }}" class="block px-3 py-2 rounded-lg text-sm text-brand-100">Employees</a>
